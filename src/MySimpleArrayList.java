@@ -60,7 +60,7 @@ public class MySimpleArrayList<E> implements List<E> {
         data[indexOfData] = e;
         indexOfData++;
         return true;
-        
+
     }
 
     @Override
@@ -240,12 +240,27 @@ public class MySimpleArrayList<E> implements List<E> {
         return true;
     }
 
+    private String printData(){
+        StringBuilder str = new StringBuilder();
+        if (isEmpty()) {
+            str.append("{}");
+            return str.toString();
+        }
+        str.append("{");
+        for (int i = 0; i < size(); i++) {
+            str.append(data[i]);
+            str.append(",");
+        }
+        int i = str.lastIndexOf(",");
+        str.replace(i,i+1,"}");
+        System.out.println("index=" + i);
+        return str.toString();
+    }
+
 
 
     @Override
     public String toString() {
-        return "MySimpleArrayList{" +
-                "data=" + Arrays.toString(data) +
-                '}';
+        return "MySimpleArrayList = " + printData();
     }
 }

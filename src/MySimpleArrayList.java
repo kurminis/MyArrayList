@@ -60,6 +60,7 @@ public class MySimpleArrayList<E> implements List<E> {
         data[indexOfData] = e;
         indexOfData++;
         return true;
+        
     }
 
     @Override

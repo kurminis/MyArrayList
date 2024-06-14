@@ -14,7 +14,11 @@ public class MySimpleArrayList<E> implements List<E> {
     }
 
     public MySimpleArrayList(int size) {
-        this.capacity = size;
+        if (size == 0) {
+            capacity = startCapacity;
+        } else {
+            capacity = size;
+        }
         data = new Object[capacity];
     }
 
@@ -66,12 +70,10 @@ public class MySimpleArrayList<E> implements List<E> {
     @Override
     public void add(int index, E element) {
         checkIndex(index);
-        if (index == indexOfData)
-        {
+        if (index == indexOfData) {
             add(element);
-        }
-        else {
-            newArray(index, element);
+        } else {
+            addElementByIndex(index, element);
             indexOfData++;
         }
     }
@@ -83,23 +85,12 @@ public class MySimpleArrayList<E> implements List<E> {
         data = newData;
     }
 
-    private void newArray(int index, E element) {
+    private void addElementByIndex(int index, E element) {
         if (data.length - size() < 2) {
-            capacity = indexOfData + startCapacity;
+            newArray();
         }
-        Object[] newData = new Object[capacity];
-//        if (index == 0) {
-//            newData[index] = element;
-//            System.arraycopy(data, 0, newData, index + 1, indexOfData);
-//        } else {
-//            System.arraycopy(data, 0, newData, 0, index);
-//            newData[index] = element;
-//            System.arraycopy(data, index, newData, index + 1, indexOfData - index);
-//        }
-        System.arraycopy(data, 0, newData, 0, index);
-        newData[index] = element;
-        System.arraycopy(data, index, newData, index + 1, indexOfData - index);
-        data = newData;
+        moveElements(index, true);
+        set(index, element);
     }
 
     @Override
@@ -165,19 +156,17 @@ public class MySimpleArrayList<E> implements List<E> {
 
     @Override
     public E set(int index, E element) {
-        return null;
+        checkIndex(index);
+        E el = (E) data[index];
+        data[index] = element;
+        return el;
     }
-
-
-
-
-
 
     @Override
     public E remove(int index) {
         checkIndex(index);
         E item = (E) data[index];
-        newArray(index);
+        moveElements(index, false);
         indexOfData--;
         return item;
     }
@@ -216,22 +205,14 @@ public class MySimpleArrayList<E> implements List<E> {
         return null;
     }
 
-    private void newArray(int index)
+    private void moveElements(int index, boolean add)
     {
-        Object[] newData = new Object[data.length];
-        System.arraycopy(data,0,newData,0,index);
-        System.arraycopy(data, index+1, newData,index,data.length-index-1);
-        data = newData;
-    }
-
-    private void clearData(Object[] data, int startIndex)
-    {
-        for (int i = startIndex; i < data.length; i++)
-        {
-            data[i] = null;
+        if (add) {
+            System.arraycopy(data,index, data, index + 1, indexOfData - index);
+        } else {
+            System.arraycopy(data, index + 1, data, index, indexOfData - index);
         }
     }
-
 
     private boolean checkIndex(int index)
     {
@@ -253,14 +234,34 @@ public class MySimpleArrayList<E> implements List<E> {
         }
         int i = str.lastIndexOf(",");
         str.replace(i,i+1,"}");
-        System.out.println("index=" + i);
+        //System.out.println("index=" + i);
+        return str.toString();
+    }
+
+    private String printData2(){
+        StringBuilder str = new StringBuilder();
+        if (isEmpty()) {
+            str.append("{}");
+            return str.toString();
+        }
+        str.append("{");
+        for (int i = 0; i < data.length; i++) {
+            str.append(data[i]);
+            str.append(",");
+        }
+        int i = str.lastIndexOf(",");
+        str.replace(i,i+1,"}");
+        //System.out.println("index=" + i);
         return str.toString();
     }
 
 
 
+
+
     @Override
     public String toString() {
-        return "MySimpleArrayList = " + printData();
+        return "MySimpleArrayList = " + printData() +
+                "\n Data = " + printData2();
     }
 }
